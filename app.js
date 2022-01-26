@@ -1,4 +1,5 @@
 
+
 //Item controller
 const ItemCtrl = (function(){
     //Item constructor
@@ -30,6 +31,14 @@ const ItemCtrl = (function(){
             newItem = new Item(ID, name, calories);
             data.items.push(newItem);
             return newItem;
+        },
+        getTotalCalories: function (){
+            let total = 0;
+            data.items.forEach(function(item){
+                total = total + item.calories;
+            });
+            data.total = total;
+            return data.total;
         },
         logData: function(){
             return data;
@@ -78,6 +87,9 @@ const UICtrl = (function(){
             document.querySelector(UISelectors.itemNameInput).value="";
             document.querySelector(UISelectors.itemCaloriesInput).value="";
         },
+        showTotalCalories: function(totalCalories){
+            document.querySelector(UISelectors.totalCalories).textContent = totalCalories
+        }
     }
 })();
 
@@ -93,12 +105,14 @@ const App = (function(ItemCtrl, UICtrl){
         const input = UICtrl.getItemInput()
         if(input.name !== "" && input.calories !== ""){
             const newItem = ItemCtrl.addItem(input.name, input.calories);
+            const totalCalories = ItemCtrl.getTotalCalories();
+            UICtrl.showTotalCalories(totalCalories);
             UICtrl.addListItem(newItem);
             UICtrl.clearInput();
         }
+
         event.preventDefault();
     }
-    //get items from storage
 
     return {
         init: function(){
